@@ -1,59 +1,85 @@
-const auth = require('../middleware/auth');
-const {Rental, validate} = require('../models/rentals');
-const {Movie} = require('../models/movies');
-const {Customer} = require('../models/customer');
-const Fawn = require('fawn');
+const {Rental, validate} = require('../models/rental'); 
+const {Movie} = require('../models/movie'); 
+const {Customer} = require('../models/customer'); 
+const mongoose = require('mongoose');
+const Fawn = require('fawn'); // Causing the error
 const express = require('express');
+const { reject } = require('lodash');
 const router = express.Router();
 
-Fawn.init('mongodb://localhost/vidly');
+// Fawn.init('mongodb://0.0.0.0:27017/vidly');
 
-const prefixRouteURL = '/';
-
-router.get(prefixRouteURL, async (req, res) => {
-    const rentals = await Rental.find().sort('-dateOut');
-    res.send(rentals);
+router.get('/', async (req, res) => {
+  const rentals = await Rental.find().sort('-dateOut');
+  res.send(rentals);
 });
 
-router.post(prefixRouteURL, auth, async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+router.post('/', async (req, res) => {
+  const { error } = validate(req.body); 
+  if (error) return res.status(400).send(error.details[0].message);
 
-    const customer = await Customer.findById(req.body.customerId);
-    if(!customer) return res.status(400).send('Invalid Customer');
+  const customer = await Customer.findById(req.body.customerId);
+  if (!customer) return res.status(400).send('Invalid customer.');
 
-    const movie = await Movie.findById(req.body.movieId);
-    if(!movie) return res.status(400).send('Invalid Movie');
+  let movie = await Movie.findById(req.body.movieId);
+  if (!movie) return res.status(400).send('Invalid movie.');
 
-    if(movie.numberInStock === 0) return res.status(400).send('Movie not in stock.');
+  if (movie.numberInStock === 0) return res.status(400).send('Movie not in stock.');
 
-    let rental = new Rental({
-        customer: {
-            _id: customer._id,
-            name: customer.name,
-            phone: customer.phone
-        },
-        movie: {
-            _id: movie._id,
-            title: movie.title,
-            dailyRentalRate: movie.dailyRentalRate
-        },
+  const session = await mongoose.startSession();
+
+  let rental = new Rental({ 
+    customer: {
+      _id: customer._id,
+      name: customer.name, 
+      phone: customer.phone
+    },
+    movie: {
+      _id: movie._id,
+      title: movie.title,
+      dailyRentalRate: movie.dailyRentalRate
+    }
+  });
+
+  try {
+
+    session.startTransaction();
+    Movie.findByIdAndUpdate({_id: movie._id}, {
+      $inc: { numberInStock: -1 }
+    }, { new: true }).then((docs) => {
+      // console.log(docs);
+    }).catch((err) => {
+      reject(err);
     });
 
-    // TRANSACTION
-    try {
-        new Fawn.Task()
-            .save('rentals', rental)
-            .update('movies', { _id: movie._id }, {
-                $inc: { numberInStock: -1 }
-            })
-            .run();
-    }
-    catch(ex) {
-        res.send(500).send('Something failed.');
-    }
-    
-    res.send(rental); 
+    await rental.save();
+    await session.commitTransaction();
+    session.endSession();
+
+    // new Fawn.Task()
+    //   .save('rentals', rental)
+    //   .update('movies', { _id: movie._id }, { 
+    //     $inc: { numberInStock: -1 }
+    //   })
+    //   .run();
+  
+    res.send(rental);
+  }
+  catch(ex) {
+    console.log(ex);
+    await session.abortTransaction()
+    session.endSession();
+    res.status(500).send('Something failed.');
+  }
 });
 
-module.exports = router;
+router.get('/:id', async (req, res) => {
+  const rental = await Rental.findById(req.params.id).lean(); // .lean() method for faster exicution | in response we will get POJO(Plain Old Javascript Object).
+                            // .populate('movie', 'title'); // Populated the other objects data syntax: .populate('modelname', '(optional argument)<select column names>')
+
+  if (!rental) return res.status(404).send('The rental with the given ID was not found.');
+
+  res.send(rental);
+});
+
+module.exports = router; 
