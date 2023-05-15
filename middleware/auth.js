@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const config = require('config');
+import * as jwt from 'jsonwebtoken';
+import * as config from 'config';
 
-module.exports = function (req, res, next) { // next means to pass controll to next middleware function in the request processing pipeline
+export default function (req, res, next) { // NEXT MEANS TO PASS CONTROL TO NEXT MIDDLEWARE FUNCTION IN THE REQUEST PROCESSING PIPELINE
   const token = req.header('x-auth-token');
   if (!token) return res.status(401).send('Access denied. No token provided.');
 
@@ -13,4 +13,4 @@ module.exports = function (req, res, next) { // next means to pass controll to n
   catch (ex) {
     res.status(400).send('Invalid token.');
   }
-}
+};
