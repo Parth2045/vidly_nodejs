@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 import mongoose from 'mongoose';
 import { genreSchema } from './genre.js';
 

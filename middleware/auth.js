@@ -1,7 +1,7 @@
-import * as jwt from 'jsonwebtoken';
-import * as config from 'config';
+import jwt from 'jsonwebtoken';
+import config from 'config';
 
-export default function (req, res, next) { // NEXT MEANS TO PASS CONTROL TO NEXT MIDDLEWARE FUNCTION IN THE REQUEST PROCESSING PIPELINE
+const auth = (req, res, next) => { // NEXT MEANS TO PASS CONTROL TO NEXT MIDDLEWARE FUNCTION IN THE REQUEST PROCESSING PIPELINE
   const token = req.header('x-auth-token');
   if (!token) return res.status(401).send('Access denied. No token provided.');
 
@@ -11,6 +11,9 @@ export default function (req, res, next) { // NEXT MEANS TO PASS CONTROL TO NEXT
     next();
   }
   catch (ex) {
+    console.log(ex);
     res.status(400).send('Invalid token.');
   }
 };
+
+export default auth;

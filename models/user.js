@@ -1,6 +1,6 @@
-import * as config from 'config';
-import * as jwt from 'jsonwebtoken';
-import * as Joi from 'joi';
+import config from 'config';
+import jwt from 'jsonwebtoken';
+import Joi from 'joi';
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({

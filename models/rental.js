@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 import mongoose from 'mongoose';
 
 const Rental = mongoose.model('Rental', new mongoose.Schema({
