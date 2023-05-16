@@ -1,14 +1,14 @@
-const {Rental, validate} = require('../models/rental'); 
-const {Movie} = require('../models/movie'); 
-const {Customer} = require('../models/customer'); 
-const mongoose = require('mongoose');
-const Fawn = require('fawn'); // Causing the error
-const express = require('express');
-const { reject } = require('lodash');
+import {Rental, validate} from '../models/rental.js';
+import { Movie } from '../models/movie.js';
+import { Customer } from '../models/customer.js';
+import mongoose from 'mongoose'; 
+import * as Fawn from 'fawn'; // Causing the error
+import * as express from 'express';
+import * as lodash from 'lodash';
+const { reject } = lodash;
 const router = express.Router();
 
 // Fawn.init('mongodb://0.0.0.0:27017/vidly');
-
 router.get('/', async (req, res) => {
   const rentals = await Rental.find().sort('-dateOut');
   res.send(rentals);
@@ -82,4 +82,4 @@ router.get('/:id', async (req, res) => {
   res.send(rental);
 });
 
-module.exports = router; 
+export default router;

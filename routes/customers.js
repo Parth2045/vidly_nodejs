@@ -1,6 +1,5 @@
-const {Customer, validate} = require('../models/customer'); 
-const mongoose = require('mongoose');
-const express = require('express');
+import { Customer, validateCustomer } from '../models/customer.js';
+import * as express from 'express';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -9,7 +8,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { error } = validate(req.body); 
+  const { error } = validateCustomer(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
   let customer = new Customer({ 
@@ -23,7 +22,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const { error } = validate(req.body); 
+  const { error } = validateCustomer(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
   const customer = await Customer.findByIdAndUpdate(req.params.id,
@@ -54,4 +53,4 @@ router.get('/:id', async (req, res) => {
   res.send(customer);
 });
 
-module.exports = router; 
+export default router;

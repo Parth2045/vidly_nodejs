@@ -1,16 +1,15 @@
-const winston = require('winston');
-
-module.exports = function(err, req, res, next){ // Express Error Middleware
+import winston from 'winston';
+export default function (err, req, res, next) {
     // winston.log('error', err.message);
     // or alternative, helper function
-  winston.error(err.message, err);
+    winston.error(err.message, err);
 
-  // error
-  // warn
-  // info
-  // verbose
-  // debug 
-  // silly
-
-  res.status(500).send('Something failed.');
+    // error
+    // warn
+    // info
+    // verbose
+    // debug 
+    // silly
+  
+    res.status(500).send('Something failed.');
 }
