@@ -1,12 +1,17 @@
-const {User} = require('../../models/user');
-const auth = require('../../middleware/auth');
-const mongoose = require('mongoose');
+// const {User} = require('../../models/user');
+import { User } from '../../models/user.js';
+// const auth = require('../../middleware/auth');
+import auth from '../../middleware/auth.js';
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
+import { jest } from '@jest/globals';
 
 describe('auth middleware', () => {
     it('should populate req.user with the payload of a valid JWT', () => {
         const user = { 
             _id: mongoose.Types.ObjectId().toHexString(),
-            iAdmin: fase
+            isAdmin: false
         };
         const token = new User(user).generateAuthToken();
         console.log(token);
