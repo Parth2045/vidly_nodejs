@@ -6,7 +6,7 @@ import * as express from 'express';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const genres = await Genre.find().sort('name');
+  const genres = await Genre.find().sort('name').lean();
   res.send(genres);
 });
 
@@ -26,7 +26,7 @@ router.put('/:id', async (req, res) => {
 
   const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.body.name }, {
     new: true
-  });
+  }).lean().select('_id name');
 
   if (!genre) return res.status(404).send('The genre with the given ID was not found.');
   
@@ -42,7 +42,7 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 });
 
 router.get('/:id', validateObjectId, async (req, res) => {
-  const genre = await Genre.findById(req.params.id);
+  const genre = await Genre.findById(req.params.id).lean();
 
   if (!genre) return res.status(404).send('The genre with the given ID was not found.');
 

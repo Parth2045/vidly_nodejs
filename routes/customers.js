@@ -3,7 +3,7 @@ import * as express from 'express';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const customers = await Customer.find().sort('name');
+  const customers = await Customer.find().sort('name').lean().select('-__v');
   res.send(customers);
 });
 
@@ -30,7 +30,7 @@ router.put('/:id', async (req, res) => {
       name: req.body.name,
       isGold: req.body.isGold,
       phone: req.body.phone
-    }, { new: true });
+    }, { new: true }).lean().select('-__v');
 
   if (!customer) return res.status(404).send('The customer with the given ID was not found.');
   
@@ -38,7 +38,7 @@ router.put('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  const customer = await Customer.findByIdAndRemove(req.params.id);
+  const customer = await Customer.findByIdAndRemove(req.params.id).lean().select('-__v');
 
   if (!customer) return res.status(404).send('The customer with the given ID was not found.');
 
@@ -46,7 +46,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const customer = await Customer.findById(req.params.id);
+  const customer = await Customer.findById(req.params.id).lean().select('-__v -date');
 
   if (!customer) return res.status(404).send('The customer with the given ID was not found.');
 

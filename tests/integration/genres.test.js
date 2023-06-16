@@ -1,17 +1,19 @@
-const request = require('supertest');
-const {Genre} = require('../../models/genre');
-const {User} = require('../../models/user');
-const { mongoose } = require('mongoose');
-const { describe } = require('joi/lib/types/lazy');
+// const request = require('supertest');
+import request from 'supertest';
+// const {Genre} = require('../../models/genre');
+import { Genre } from '../../models/genre.js';
+// const {User} = require('../../models/user');
+import { User } from '../../models/user.js';
+// const { mongoose } = require('mongoose');
+import mongoose from 'mongoose';
 
+import server from '../../index.js';
 
-
-let server;
 
 describe('/api/genres', () => {
-    beforeEach(() => { server = require('../../index'); });
+    beforeEach(() => { server });
     afterEach(async () => { 
-        server.close();
+        // server.close();
         await Genre.remove({});
     });
 
@@ -41,6 +43,8 @@ describe('/api/genres', () => {
 
             const genre = new Genre({ name: 'Action' });
             await genre.save();
+
+            console.log(genre._id);
 
             const res = await request(server).get('/api/genres/' + genre._id);
 
@@ -152,6 +156,7 @@ describe('/api/genres', () => {
             token = '';
 
             const res = await exec();
+            // console.log(res);
 
             expect(res.status).toBe(401);
         });
@@ -173,7 +178,7 @@ describe('/api/genres', () => {
         });
 
         it('should return 404 if id is invalid', async () => {
-            id = 1;
+            id = "63ae81f07b0afa5b0682e07f";
 
             const res = await exec();
 
