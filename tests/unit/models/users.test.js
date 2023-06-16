@@ -1,7 +1,11 @@
-const {User} = require('../../../models/user');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const mongoose = require('mongoose');
+// const {User} = require('../../../models/user');
+import { User } from '../../../models/user.js';
+// const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
+// const config = require('config');
+import config from 'config';
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 describe('user.generateAuthToken', () => {
     it('should return a valid JWT', () => {

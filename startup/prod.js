@@ -1,7 +1,7 @@
-const helmet = require('helmet');
-const compression = require('compression');
+import helmet from 'helmet';
+import compression from 'compression';
 
-module.exports = function(app) {
+export default function startProd (app) {
     app.use(helmet()); // We need to call in order to get middleware function
     app.use(compression());
 };

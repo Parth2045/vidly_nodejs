@@ -1,0 +1,1 @@
+$env:vidly_jwtPrivateKey="mysecurekey"

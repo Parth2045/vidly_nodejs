@@ -1,16 +1,16 @@
-const {Rental, validate} = require('../models/rental'); 
-const {Movie} = require('../models/movie'); 
-const {Customer} = require('../models/customer'); 
-const mongoose = require('mongoose');
-const Fawn = require('fawn'); // Causing the error
-const express = require('express');
-const { reject } = require('lodash');
+import {Rental, validate} from '../models/rental.js';
+import { Movie } from '../models/movie.js';
+import { Customer } from '../models/customer.js';
+import mongoose from 'mongoose'; 
+import * as Fawn from 'fawn'; // Causing the error
+import * as express from 'express';
+import * as lodash from 'lodash';
+const { reject } = lodash;
 const router = express.Router();
 
 // Fawn.init('mongodb://0.0.0.0:27017/vidly');
-
 router.get('/', async (req, res) => {
-  const rentals = await Rental.find().sort('-dateOut');
+  const rentals = await Rental.find().sort('-dateOut').lean().select('-__v');
   res.send(rentals);
 });
 
@@ -74,12 +74,12 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const rental = await Rental.findById(req.params.id).lean(); // .lean() method for faster exicution | in response we will get POJO(Plain Old Javascript Object).
-                            // .populate('movie', 'title'); // Populated the other objects data syntax: .populate('modelname', '(optional argument)<select column names>')
+  const rental = await Rental.findById(req.params.id).lean().select('-__v'); // .lean() method for faster exicution | in response we will get POJO(Plain Old Javascript Object).
+                            // .populate('movie', 'title'); // Populated the other objects data, syntax: .populate('modelname', '(optional argument)<select column names>')
 
   if (!rental) return res.status(404).send('The rental with the given ID was not found.');
 
   res.send(rental);
 });
 
-module.exports = router; 
+export default router;

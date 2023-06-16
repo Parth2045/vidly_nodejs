@@ -1,18 +1,17 @@
-const validateObjectId = require('../middleware/validateObjectId');
-const auth = require('../middleware/auth');
-const admin = require('../middleware/admin');
-const {Genre, validate} = require('../models/genre');
-const mongoose = require('mongoose');
-const express = require('express');
+import validateObjectId from '../middleware/validateObjectId.js';
+import auth from '../middleware/auth.js';
+import admin from '../middleware/admin.js';
+import { Genre, validateGenre } from '../models/genre.js';
+import * as express from 'express';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const genres = await Genre.find().sort('name');
+  const genres = await Genre.find().sort('name').lean();
   res.send(genres);
 });
 
 router.post('/', auth, async (req, res) => {
-  const { error } = validate(req.body); 
+  const { error } = validateGenre(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
   let genre = new Genre({ name: req.body.name });
@@ -22,12 +21,12 @@ router.post('/', auth, async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const { error } = validate(req.body); 
+  const { error } = validateGenre(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
   const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.body.name }, {
     new: true
-  });
+  }).lean().select('_id name');
 
   if (!genre) return res.status(404).send('The genre with the given ID was not found.');
   
@@ -43,11 +42,11 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 });
 
 router.get('/:id', validateObjectId, async (req, res) => {
-  const genre = await Genre.findById(req.params.id);
+  const genre = await Genre.findById(req.params.id).lean();
 
   if (!genre) return res.status(404).send('The genre with the given ID was not found.');
 
   res.send(genre);
 });
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-module.exports = function (handler) {
+export default function (handler) {
   return async (req, res, next) => {
     try {
       await handler(req, res);
@@ -7,4 +7,4 @@ module.exports = function (handler) {
       next(ex);
     }
   };  
-}
+};

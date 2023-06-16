@@ -1,9 +1,15 @@
-const {User} = require('../../models/user');
-const {Genre} = require('../../models/genre');
-const request = require('supertest');
+// const {User} = require('../../models/user');
+import { User } from '../../models/user.js';
+// const {Genre} = require('../../models/genre');
+import { Genre } from '../../models/genre.js';
+// const request = require('supertest');
+import request from 'supertest';
+
+import server from '../../index.js';
+// import { describe } from 'joi/lib/types/lazy/index.js';
 
 describe('auth middleware', () => {
-    beforeEach(() => { server = require('../../index'); });
+    beforeEach(() => { server });
     afterEach(async () => {
         await Genre.remove({});
         server.close();
