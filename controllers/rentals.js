@@ -12,7 +12,7 @@ const getRentals = async (req, res) => {
   let pageNo = (req.query.page !== undefined && req.query.page >= 0) ? req.query.page : 0; // DEFAULT 0 = PAGE NO 1
   pageNo = ((pageNo - 1) < 0) ? 0 : (pageNo - 1);
   const rentals = await Rental.find().sort('-dateOut').lean().select('-__v').skip(parseInt(pageNo) * perPageLimit).limit(perPageLimit);
-  res.send(rentals);
+  res.send({ rentals, recordCount: rentals.length, pageNo: pageNo + 1 });
 };
 
 const storeRental = async (req, res) => {
