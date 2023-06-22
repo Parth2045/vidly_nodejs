@@ -7,9 +7,12 @@ import * as lodash from 'lodash';
 const { reject } = lodash;
 
 // Fawn.init('mongodb://0.0.0.0:27017/vidly');
+const perPageLimit = 10;
 const getRentals = async (req, res) => {
-    const rentals = await Rental.find().sort('-dateOut').lean().select('-__v');
-    res.send(rentals);
+  let pageNo = (req.query.page !== undefined && req.query.page >= 0) ? req.query.page : 0; // DEFAULT 0 = PAGE NO 1
+  pageNo = ((pageNo - 1) < 0) ? 0 : (pageNo - 1);
+  const rentals = await Rental.find().sort('-dateOut').lean().select('-__v').skip(parseInt(pageNo) * perPageLimit).limit(perPageLimit);
+  res.send(rentals);
 };
 
 const storeRental = async (req, res) => {
@@ -72,8 +75,10 @@ const storeRental = async (req, res) => {
 };
 
 const getRental = async (req, res) => {
-    const rental = await Rental.findById(req.params.id).lean().select('-__v'); // .lean() method for faster exicution | in response we will get POJO(Plain Old Javascript Object).
-                              // .populate('movie', 'title'); // Populated the other objects data, syntax: .populate('modelname', '(optional argument)<select column names>')
+    const rental = await Rental.findById(req.params.id).lean().populate('movie'); // Popolate movie object
+    // .lean() method for faster exicution | in response we will get POJO(Plain Old Javascript Object).
+    // .populate('movie', 'title'); // Populated the other objects data, syntax: .populate('modelname', '(optional argument)<select column names>')
+    // Populate is not working, please check properly
   
     if (!rental) return res.status(404).send('The rental with the given ID was not found.');
   
