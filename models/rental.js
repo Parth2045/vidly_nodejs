@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import mongoose from 'mongoose';
+import { mongoose, Schema } from 'mongoose';
 
 const Rental = mongoose.model('Rental', new mongoose.Schema({
   customer: { 
@@ -23,24 +23,7 @@ const Rental = mongoose.model('Rental', new mongoose.Schema({
     }),  
     required: true
   },
-  movie: {
-    type: new mongoose.Schema({
-      title: {
-        type: String,
-        required: true,
-        trim: true, 
-        minlength: 5,
-        maxlength: 255
-      },
-      dailyRentalRate: { 
-        type: Number, 
-        required: true,
-        min: 0,
-        max: 255
-      }   
-    }),
-    required: true
-  },
+  movie: [{ type: Schema.Types.ObjectId, ref: 'Movies' }],
   dateOut: { 
     type: Date, 
     required: true,
