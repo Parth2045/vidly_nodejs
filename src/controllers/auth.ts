@@ -14,7 +14,7 @@ const auth = async ( req: Request, res: Response ): Promise<any> => {
     const validPassword = await bcrypt.compare(req.body.password, user.password);
     if (!validPassword) return res.status(400).send('Invalid email or password.');
 
-    const userModelObj = new User();
+    const userModelObj = new User(user);
     const token = userModelObj.generateAuthToken();
     
     res.send(token);

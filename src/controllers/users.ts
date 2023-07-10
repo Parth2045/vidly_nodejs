@@ -11,7 +11,6 @@ interface AuthenticatedRequest extends Request {
 
 const getCurrentUser = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
     const user = await User.findById(req.user._id).select('-password').lean();
-    console.log("USER: ", req.user, req.user._id, user);
     res.send(user);
 };
 

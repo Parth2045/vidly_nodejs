@@ -25,7 +25,7 @@ const auth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validPassword = yield bcrypt_1.default.compare(req.body.password, user.password);
     if (!validPassword)
         return res.status(400).send('Invalid email or password.');
-    const userModelObj = new user_1.User();
+    const userModelObj = new user_1.User(user);
     const token = userModelObj.generateAuthToken();
     res.send(token);
 });

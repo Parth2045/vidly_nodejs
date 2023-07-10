@@ -19,7 +19,6 @@ const user_1 = require("../models/user");
 ;
 const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_1.User.findById(req.user._id).select('-password').lean();
-    console.log("USER: ", req.user, req.user._id, user);
     res.send(user);
 });
 exports.getCurrentUser = getCurrentUser;
