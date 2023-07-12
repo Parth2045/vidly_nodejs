@@ -7,7 +7,10 @@ import users from '../routes/users';
 import auth from '../routes/auth';
 import error from '../middleware/error';
 
-export default function startRoutes (app) {
+export default function startRoutes (app: any) {
+  const rootPath = './public';
+  app.use(express.static(rootPath)); // ROOT PATH
+
   app.use(express.json()); // MIDDLEWARE
   app.use('/api/genres', genres);
   app.use('/api/customers', customers);
