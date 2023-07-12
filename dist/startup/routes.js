@@ -13,7 +13,7 @@ const auth_1 = __importDefault(require("../routes/auth"));
 const error_1 = __importDefault(require("../middleware/error"));
 function startRoutes(app) {
     const rootPath = './public';
-    app.use(express_1.default.static(rootPath)); // ROOT PATH
+    app.use(express_1.default.static(rootPath)); // ROOT PATH | TO ACCESS STATIC FILES
     app.use(express_1.default.json()); // MIDDLEWARE
     app.use('/api/genres', genres_1.default);
     app.use('/api/customers', customers_1.default);
