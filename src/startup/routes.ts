@@ -9,7 +9,7 @@ import error from '../middleware/error';
 
 export default function startRoutes (app: any) {
   const rootPath = './public';
-  app.use(express.static(rootPath)); // ROOT PATH
+  app.use(express.static(rootPath)); // ROOT PATH | TO ACCESS STATIC FILES
 
   app.use(express.json()); // MIDDLEWARE
   app.use('/api/genres', genres);
