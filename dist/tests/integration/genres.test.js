@@ -15,29 +15,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // const request = require('supertest');
 const supertest_1 = __importDefault(require("supertest"));
 // const {Genre} = require('../../models/genre');
-const genre_js_1 = require("../../models/genre.js");
+const genre_1 = require("../../models/genre");
 // const {User} = require('../../models/user');
-const user_js_1 = require("../../models/user.js");
+const user_1 = require("../../models/user");
 // const { mongoose } = require('mongoose');
 const mongoose_1 = __importDefault(require("mongoose"));
-const index_js_1 = __importDefault(require("../../index.js"));
+const index_1 = __importDefault(require("../../index"));
 describe('/api/genres', () => {
-    beforeEach(() => { index_js_1.default; });
+    beforeEach(() => { index_1.default; });
     afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
         // server.close();
-        yield genre_js_1.Genre.remove({});
+        yield genre_1.Genre.remove({});
     }));
     describe('GET /', () => {
         it('should return all genres', () => __awaiter(void 0, void 0, void 0, function* () {
-            yield genre_js_1.Genre.collection.insertMany([
+            yield genre_1.Genre.collection.insertMany([
                 { name: "genre1" },
                 { name: "genre2" }
             ]);
-            const res = yield (0, supertest_1.default)(index_js_1.default).get('/api/genres');
+            const res = yield (0, supertest_1.default)(index_1.default).get('/api/genres');
             expect(res.status).toBe(200);
             // expect(res.body.length).toBe(2);
-            expect(res.body.some(g => g.name === 'genre1')).toBeTruthy();
-            expect(res.body.some(g => g.name === 'genre2')).toBeTruthy();
+            expect(res.body.some((g) => g.name === 'genre1')).toBeTruthy();
+            expect(res.body.some((g) => g.name === 'genre2')).toBeTruthy();
         }));
     });
     describe('Get /:id', () => {
@@ -46,20 +46,19 @@ describe('/api/genres', () => {
             // const res = await request(server).get('/api/genres/' + genreId);
             // expect(res.status).toBe(200);
             // // expect(res.status).toBe(404);
-            const genre = new genre_js_1.Genre({ name: 'Action' });
+            const genre = new genre_1.Genre({ name: 'Action' });
             yield genre.save();
-            console.log(genre._id);
-            const res = yield (0, supertest_1.default)(index_js_1.default).get('/api/genres/' + genre._id);
+            const res = yield (0, supertest_1.default)(index_1.default).get('/api/genres/' + genre._id);
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('name', genre.name);
         }));
         it('should return 404 if invalid id is passed', () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(index_js_1.default).get('/api/genres/1');
+            const res = yield (0, supertest_1.default)(index_1.default).get('/api/genres/1');
             expect(res.status).toBe(404);
         }));
         it('should return 404 if no genre with given id exist', () => __awaiter(void 0, void 0, void 0, function* () {
             const id = new mongoose_1.default.Types.ObjectId();
-            const res = yield (0, supertest_1.default)(index_js_1.default).get('/api/genres/' + id);
+            const res = yield (0, supertest_1.default)(index_1.default).get('/api/genres/' + id);
             expect(res.status).toBe(404);
         }));
     });
@@ -70,13 +69,13 @@ describe('/api/genres', () => {
         let token;
         let name;
         const exec = () => __awaiter(void 0, void 0, void 0, function* () {
-            return yield (0, supertest_1.default)(index_js_1.default)
+            return yield (0, supertest_1.default)(index_1.default)
                 .post('/api/genres')
                 .set('x-auth-token', token)
                 .send({ name }); //IF KEYS AND VALUES ARE SAME, WE CAN USE name ONLY
         });
         beforeEach(() => {
-            token = new user_js_1.User().generateAuthToken();
+            token = new user_1.User().generateAuthToken();
             name = 'genre1';
         });
         it('should return 401 if client is not logged in', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -96,7 +95,7 @@ describe('/api/genres', () => {
         }));
         it('should save the genre if it is valid', () => __awaiter(void 0, void 0, void 0, function* () {
             yield exec();
-            const genre = yield genre_js_1.Genre.find({ name: 'genre1' });
+            const genre = yield genre_1.Genre.find({ name: 'genre1' });
             expect(genre).not.toBeNull();
         }));
         it('should return the genre if it is valid', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -111,7 +110,7 @@ describe('/api/genres', () => {
         let genre;
         let id;
         const exec = () => __awaiter(void 0, void 0, void 0, function* () {
-            return yield (0, supertest_1.default)(index_js_1.default)
+            return yield (0, supertest_1.default)(index_1.default)
                 .put('/api/genres/' + id)
                 .set('x-auth-token', token)
                 .send({ name: newName });
@@ -119,16 +118,15 @@ describe('/api/genres', () => {
         beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
             // before each test we need to create a genre and
             // put it in the database
-            genre = new genre_js_1.Genre({ name: 'genre1' });
+            genre = new genre_1.Genre({ name: 'genre1' });
             yield genre.save();
-            token = new user_js_1.User().generateAuthToken();
+            token = new user_1.User().generateAuthToken();
             id = genre._id;
             newName = 'updatedName';
         }));
         it('should return 401 if client is not logged in', () => __awaiter(void 0, void 0, void 0, function* () {
             token = '';
             const res = yield exec();
-            // console.log(res);
             expect(res.status).toBe(401);
         }));
         it('should return 400 if genre is less than 5 characters', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -153,7 +151,7 @@ describe('/api/genres', () => {
         }));
         it('should update the genre if input is valid', () => __awaiter(void 0, void 0, void 0, function* () {
             yield exec();
-            const updatedGenre = yield genre_js_1.Genre.findById(genre._id);
+            const updatedGenre = yield genre_1.Genre.findById(genre._id);
             expect(updatedGenre.name).toBe(newName);
         }));
         it('should return the updated genre if it is valid', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -167,7 +165,7 @@ describe('/api/genres', () => {
         let genre;
         let id;
         const exec = () => __awaiter(void 0, void 0, void 0, function* () {
-            return yield (0, supertest_1.default)(index_js_1.default)
+            return yield (0, supertest_1.default)(index_1.default)
                 .delete('/api/genres/' + id)
                 .set('x-auth-token', token)
                 .send();
@@ -175,10 +173,10 @@ describe('/api/genres', () => {
         beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
             // Before each test we need to create a genre and 
             // put it in the database.
-            genre = new genre_js_1.Genre({ name: 'genre1' });
+            genre = new genre_1.Genre({ name: 'genre1' });
             yield genre.save();
             id = genre._id;
-            token = new user_js_1.User({ isAdmn: true }).generateAuthToken();
+            token = new user_1.User({ isAdmn: true }).generateAuthToken();
         }));
         it('should return 401 if client is not logged in', () => __awaiter(void 0, void 0, void 0, function* () {
             token = '';
@@ -186,7 +184,7 @@ describe('/api/genres', () => {
             expect(res.status).toBe(401);
         }));
         it('should return 403 if the user is not an admin', () => __awaiter(void 0, void 0, void 0, function* () {
-            token = new user_js_1.User({ isAdmin: false }).generateAuthToken();
+            token = new user_1.User({ isAdmin: false }).generateAuthToken();
             const res = yield exec();
             expect(res.status).toBe(403);
         }));
@@ -202,7 +200,7 @@ describe('/api/genres', () => {
         }));
         it('should delete the genre if input is valid', () => __awaiter(void 0, void 0, void 0, function* () {
             yield exec();
-            const genreInDb = yield genre_js_1.Genre.findById(id);
+            const genreInDb = yield genre_1.Genre.findById(id);
             expect(genreInDb).toBeNull();
         }));
         it('should return the removed genre', () => __awaiter(void 0, void 0, void 0, function* () {
