@@ -17,7 +17,7 @@ const auth = async ( req: Request, res: Response ): Promise<any> => {
     const userModelObj = new User(user);
     const token = userModelObj.generateAuthToken();
     
-    res.send(token);
+    res.send(token); 
 }
 
 function validate(req: any) {
