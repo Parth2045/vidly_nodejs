@@ -1,9 +1,6 @@
 import winston from 'winston';
 import express from 'express';
-import cors from 'cors'; // ADDED DUE TO CORS ISSUE
 const app = express();
-
-app.use(cors()); // ADDED DUE TO CORS ISSUE
 
 import startLogging from './startup/logging';
 startLogging();
