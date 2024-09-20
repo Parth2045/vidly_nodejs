@@ -4,6 +4,7 @@ import cors from 'cors'; // ADDED DUE TO CORS ISSUE
 const app = express();
 
 app.use(cors()); // ADDED DUE TO CORS ISSUE
+app.options('*', cors());
 
 import startLogging from './startup/logging';
 startLogging();
