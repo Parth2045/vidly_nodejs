@@ -5,6 +5,8 @@ const app = express();
 
 // ADDED DUE TO CORS ISSUE
 app.use(cors());
+app.set('trust proxy', true);
+
 // app.options('*', cors());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
