@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = startRoutes;
 const express_1 = __importDefault(require("express"));
 const genres_1 = __importDefault(require("../routes/genres"));
 const customers_1 = __importDefault(require("../routes/customers"));
@@ -23,4 +24,3 @@ function startRoutes(app) {
     app.use('/api/auth', auth_1.default);
     app.use(error_1.default);
 }
-exports.default = startRoutes;

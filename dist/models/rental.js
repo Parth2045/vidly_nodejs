@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate = exports.Rental = void 0;
+exports.Rental = void 0;
+exports.validate = validate;
 const joi_1 = __importDefault(require("joi"));
 const mongoose_1 = require("mongoose");
 const rentalSchema = new mongoose_1.Schema({
@@ -51,4 +52,3 @@ function validate(rental) {
     };
     return joi_1.default.validate(rental, schema);
 }
-exports.validate = validate;

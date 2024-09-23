@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateMovie = exports.Movie = void 0;
+exports.Movie = void 0;
+exports.validateMovie = validateMovie;
 const joi_1 = __importDefault(require("joi"));
 const mongoose_1 = require("mongoose");
 const genre_1 = require("./genre");
@@ -43,4 +44,3 @@ function validateMovie(movie) {
     };
     return joi_1.default.validate(movie, schema);
 }
-exports.validateMovie = validateMovie;

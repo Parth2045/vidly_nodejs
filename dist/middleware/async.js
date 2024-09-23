@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = default_1;
 function default_1(handler) {
     return (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
@@ -19,5 +20,4 @@ function default_1(handler) {
         }
     });
 }
-exports.default = default_1;
 ;

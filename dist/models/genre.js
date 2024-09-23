@@ -26,7 +26,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateGenre = exports.Genre = exports.genreSchema = void 0;
+exports.Genre = exports.genreSchema = void 0;
+exports.validateGenre = validateGenre;
 const joi_1 = __importDefault(require("joi"));
 const mongoose_1 = __importStar(require("mongoose"));
 const genreSchema = new mongoose_1.default.Schema({
@@ -46,4 +47,3 @@ function validateGenre(genre) {
     };
     return joi_1.default.validate(genre, schema);
 }
-exports.validateGenre = validateGenre;
