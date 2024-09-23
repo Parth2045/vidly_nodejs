@@ -6,7 +6,7 @@ import startLogging from './startup/logging';
 startLogging();
 
 import startRoutes from './startup/routes';
-startRoutes(app); // Provide Reference of "app" object in route module // THIS IS REMAINING FROM HERE
+startRoutes(app); // Provide Reference of "app" object in route module
 
 import startDB from './startup/db';
 startDB();
