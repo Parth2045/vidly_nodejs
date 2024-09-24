@@ -1,9 +1,14 @@
 import winston from 'winston';
 import express from 'express';
+import cors from 'cors';
+
 const app = express();
 
 import startLogging from './startup/logging';
 startLogging();
+
+// CORS
+app.use(cors()); // USING THIS IT ALLOWS LOCAL APP TO ACCESS THE ENDPOINTS
 
 import startRoutes from './startup/routes';
 startRoutes(app); // Provide Reference of "app" object in route module
