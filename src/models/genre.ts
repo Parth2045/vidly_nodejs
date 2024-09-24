@@ -4,6 +4,7 @@ import mongoose, { Schema, Document, model, Model, Types } from 'mongoose';
 interface IGenre extends Document {
   _id: mongoose.Types.ObjectId;
   name: string;
+  movies: object;
 }
 
 const genreSchema: Schema = new mongoose.Schema({

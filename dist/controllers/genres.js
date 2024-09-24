@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getGenre = exports.deleteGenre = exports.updateGenre = exports.storeGenres = exports.getGenres = void 0;
 const genre_1 = require("../models/genre");
+const movie_1 = require("../models/movie");
 const getGenres = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const genres = yield genre_1.Genre.find().sort('name').lean();
     res.send(genres);
@@ -45,7 +46,9 @@ const deleteGenre = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.deleteGenre = deleteGenre;
 const getGenre = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const genre = yield genre_1.Genre.findById(req.params.id).lean();
+    let genre = yield genre_1.Genre.findById(req.params.id).lean().select('-__v');
+    const movies = yield movie_1.Movie.find({ 'genre._id': req.params.id }).lean().select('-__v -genre');
+    genre.movies = movies;
     if (!genre)
         return res.status(404).send('The genre with the given ID was not found.');
     res.send(genre);

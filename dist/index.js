@@ -9,7 +9,8 @@ const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const logging_1 = __importDefault(require("./startup/logging"));
 (0, logging_1.default)();
-app.use((0, cors_1.default)());
+// CORS
+app.use((0, cors_1.default)()); // USING THIS IT ALLOWS LOCAL APP TO ACCESS THE ENDPOINTS
 const routes_1 = __importDefault(require("./startup/routes"));
 (0, routes_1.default)(app); // Provide Reference of "app" object in route module
 const db_1 = __importDefault(require("./startup/db"));
