@@ -3,6 +3,5 @@ uncaughtExceptions.log
 node_modules
 package-lock.json
 coverage
-dist
 public/movies
 public/genres
