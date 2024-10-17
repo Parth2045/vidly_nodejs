@@ -8,22 +8,26 @@ const getGenres = async (req: Request, res: Response): Promise<any> => {
 };
 
 const storeGenres = async (req: Request, res: Response): Promise<any> => {
+    req.body.image = req.file.filename ?? null;
+
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    let genre = new Genre({ name: req.body.name });
+    let genre = new Genre({ name: req.body.name, image: req.body.image });
     genre = await genre.save();
 
     res.send(genre);
 };
 
 const updateGenre = async (req: Request, res: Response): Promise<any> => {
+    req.body.image = req.file.filename ?? null;
+
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.body.name }, {
+    const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.body.name, image: req.body.image }, {
         new: true
-    }).lean().select('_id name');
+    }).lean().select('_id name image');
 
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
 

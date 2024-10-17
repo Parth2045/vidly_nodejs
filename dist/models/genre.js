@@ -36,6 +36,10 @@ const genreSchema = new mongoose_1.default.Schema({
         required: true,
         minlength: 5,
         maxlength: 50
+    },
+    image: {
+        type: String,
+        default: null
     }
 });
 exports.genreSchema = genreSchema;
@@ -43,7 +47,8 @@ const Genre = (0, mongoose_1.model)('Genre', genreSchema);
 exports.Genre = Genre;
 function validateGenre(genre) {
     const schema = {
-        name: joi_1.default.string().min(5).max(50).required()
+        name: joi_1.default.string().min(5).max(50).required(),
+        image: joi_1.default.string()
     };
     return joi_1.default.validate(genre, schema);
 }

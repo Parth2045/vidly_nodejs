@@ -18,6 +18,8 @@ const getMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getMovies = getMovies;
 const storeMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    req.body.image = (_a = req.file.originalname) !== null && _a !== void 0 ? _a : null;
     const { error } = (0, movie_1.validateMovie)(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);
@@ -26,9 +28,11 @@ const storeMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(400).send('Invalid genre.');
     const movie = new movie_1.Movie({
         title: req.body.title,
+        image: req.body.image,
         genre: {
             _id: genre._id,
-            name: genre.name
+            name: genre.name,
+            image: genre.image
         },
         numberInStock: req.body.numberInStock,
         dailyRentalRate: req.body.dailyRentalRate

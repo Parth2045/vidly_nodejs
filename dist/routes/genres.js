@@ -29,14 +29,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const auth_1 = __importDefault(require("../middleware/auth"));
 const admin_1 = __importDefault(require("../middleware/admin"));
 const validateObjectId_1 = __importDefault(require("../middleware/validateObjectId"));
-const genresController = __importStar(require("../controllers/genres"));
+const genres_1 = require("../controllers/genres");
 const express = __importStar(require("express"));
+const UploadFile_util_1 = require("../utils/UploadFile.util");
 const router = express.Router();
 router.route('/')
-    .get(genresController.getGenres)
-    .post(auth_1.default, genresController.storeGenres);
+    .get(genres_1.getGenres)
+    .post([auth_1.default, (0, UploadFile_util_1.UploadFile)("genres", "image", 1)], genres_1.storeGenres);
 router.route('/:id')
-    .put(genresController.updateGenre)
-    .delete([auth_1.default, admin_1.default], genresController.deleteGenre)
-    .get(validateObjectId_1.default, genresController.getGenre);
+    .put([(0, UploadFile_util_1.UploadFile)("genres", "image", 1)], genres_1.updateGenre)
+    .delete([auth_1.default, admin_1.default], genres_1.deleteGenre)
+    .get(validateObjectId_1.default, genres_1.getGenre);
 exports.default = router;

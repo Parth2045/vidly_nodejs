@@ -18,21 +18,25 @@ const getGenres = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getGenres = getGenres;
 const storeGenres = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    req.body.image = (_a = req.file.filename) !== null && _a !== void 0 ? _a : null;
     const { error } = (0, genre_1.validateGenre)(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);
-    let genre = new genre_1.Genre({ name: req.body.name });
+    let genre = new genre_1.Genre({ name: req.body.name, image: req.body.image });
     genre = yield genre.save();
     res.send(genre);
 });
 exports.storeGenres = storeGenres;
 const updateGenre = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    req.body.image = (_a = req.file.filename) !== null && _a !== void 0 ? _a : null;
     const { error } = (0, genre_1.validateGenre)(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);
-    const genre = yield genre_1.Genre.findByIdAndUpdate(req.params.id, { name: req.body.name }, {
+    const genre = yield genre_1.Genre.findByIdAndUpdate(req.params.id, { name: req.body.name, image: req.body.image }, {
         new: true
-    }).lean().select('_id name');
+    }).lean().select('_id name image');
     if (!genre)
         return res.status(404).send('The genre with the given ID was not found.');
     res.send(genre);

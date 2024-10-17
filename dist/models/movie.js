@@ -16,6 +16,10 @@ const movieSchema = new mongoose_1.Schema({
         minlength: 5,
         maxlength: 255
     },
+    image: {
+        type: String,
+        default: null
+    },
     genre: {
         type: genre_1.genreSchema,
         required: true
@@ -38,6 +42,7 @@ exports.Movie = Movie;
 function validateMovie(movie) {
     const schema = {
         title: joi_1.default.string().min(5).max(50).required(),
+        image: joi_1.default.required(),
         genreId: joi_1.default.objectId().required(),
         numberInStock: joi_1.default.number().min(0).required(),
         dailyRentalRate: joi_1.default.number().min(0).required()
