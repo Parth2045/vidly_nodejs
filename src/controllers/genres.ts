@@ -46,11 +46,11 @@ const deleteGenre = async (req: Request, res: Response): Promise<any> => {
 const getGenre = async (req: Request, res: Response): Promise<any> => {
     let genre = await Genre.findById(req.params.id).lean().select('-__v');
 
+    if (!genre) return res.status(404).send('The genre with the given ID was not found.');
+
     const movies = await Movie.find({ 'genre._id': req.params.id }).lean().select('-__v -genre');
 
     genre.movies = movies;
-
-    if (!genre) return res.status(404).send('The genre with the given ID was not found.');
 
     res.send(genre);
 };

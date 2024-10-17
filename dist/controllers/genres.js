@@ -52,10 +52,10 @@ const deleteGenre = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.deleteGenre = deleteGenre;
 const getGenre = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let genre = yield genre_1.Genre.findById(req.params.id).lean().select('-__v');
-    const movies = yield movie_1.Movie.find({ 'genre._id': req.params.id }).lean().select('-__v -genre');
-    genre.movies = movies;
     if (!genre)
         return res.status(404).send('The genre with the given ID was not found.');
+    const movies = yield movie_1.Movie.find({ 'genre._id': req.params.id }).lean().select('-__v -genre');
+    genre.movies = movies;
     res.send(genre);
 });
 exports.getGenre = getGenre;
