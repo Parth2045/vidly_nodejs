@@ -6,4 +6,4 @@ export default function startConfig() {
   }
 }
 
-export const pulicFolder: string = "public"; // ROOT PUBLIC FOLDER
+export const publicFolder: string = "public"; // ROOT PUBLIC FOLDER

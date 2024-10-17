@@ -7,6 +7,7 @@ exports.UploadFile = void 0;
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const config_1 = require("../startup/config");
+const fs_1 = require("fs");
 // IMAGE TYPES
 const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg'];
 const getUploadFileTypes = (uploadFileType) => {
@@ -16,10 +17,16 @@ const getUploadFileTypes = (uploadFileType) => {
     return [];
 };
 const UploadFile = (folderPath, param, uploadFileType) => {
+    // DIRECTORY PATH
+    const dirPath = config_1.publicFolder + "/" + folderPath;
+    // CHECK IF DIRECTORY EXIST OR NOT
+    if (!(0, fs_1.existsSync)(dirPath)) {
+        (0, fs_1.mkdirSync)(dirPath);
+    }
     // SET UP MULTER STORAGE
     const storage = multer_1.default.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, config_1.pulicFolder + "/" + folderPath);
+            cb(null, dirPath);
         },
         filename: (req, file, cb) => {
             cb(null, path_1.default.basename(file.originalname, path_1.default.extname(file.originalname)) + '-' + Date.now() + path_1.default.extname(file.originalname));

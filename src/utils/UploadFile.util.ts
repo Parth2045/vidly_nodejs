@@ -1,7 +1,8 @@
 import multer from 'multer';
 import path from 'path';
-import { pulicFolder } from '../startup/config';
+import { publicFolder } from '../startup/config';
 import { Request, Response, NextFunction } from 'express';
+import { existsSync, mkdirSync } from 'fs';
 
 // IMAGE TYPES
 const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg'];
@@ -14,10 +15,19 @@ const getUploadFileTypes = (uploadFileType: number) => {
 };
 
 export const UploadFile = (folderPath: string, param: string, uploadFileType: number) => {
+
+    // DIRECTORY PATH
+    const dirPath: string = publicFolder + "/" + folderPath;
+
+    // CHECK IF DIRECTORY EXIST OR NOT
+    if (!existsSync(dirPath)) {
+        mkdirSync(dirPath);
+    }
+
     // SET UP MULTER STORAGE
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, pulicFolder + "/" + folderPath);
+            cb(null, dirPath);
         },
         filename: (req, file, cb) => {
             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname));

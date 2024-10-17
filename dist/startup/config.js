@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pulicFolder = void 0;
+exports.publicFolder = void 0;
 exports.default = startConfig;
 const config_1 = __importDefault(require("config"));
 function startConfig() {
@@ -11,4 +11,4 @@ function startConfig() {
         throw new Error('FATAL ERROR: jwtPrivateKey is not defined.');
     }
 }
-exports.pulicFolder = "public"; // ROOT PUBLIC FOLDER
+exports.publicFolder = "public"; // ROOT PUBLIC FOLDER
