@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 import { existsSync, mkdirSync } from 'fs';
 
 // IMAGE TYPES
-const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg'];
+const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'];
 
 const getUploadFileTypes = (uploadFileType: number) => {
     if (uploadFileType === 1) {

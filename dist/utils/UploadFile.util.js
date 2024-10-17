@@ -9,7 +9,7 @@ const path_1 = __importDefault(require("path"));
 const config_1 = require("../startup/config");
 const fs_1 = require("fs");
 // IMAGE TYPES
-const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg'];
+const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'];
 const getUploadFileTypes = (uploadFileType) => {
     if (uploadFileType === 1) {
         return imageTypes;
