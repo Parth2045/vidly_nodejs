@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Genre, validateGenre } from '../models/genre';
 import { Movie } from '../models/movie';
+import { isUndefined } from 'lodash';
 
 const getGenres = async (req: Request, res: Response): Promise<any> => {
     const genres = await Genre.find().sort('name').lean();
@@ -8,7 +9,7 @@ const getGenres = async (req: Request, res: Response): Promise<any> => {
 };
 
 const storeGenres = async (req: Request, res: Response): Promise<any> => {
-    req.body.image = req.file.filename ?? null;
+    req.body.image = isUndefined(req.file) ? null : (req.file.filename ?? null);
 
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -20,7 +21,7 @@ const storeGenres = async (req: Request, res: Response): Promise<any> => {
 };
 
 const updateGenre = async (req: Request, res: Response): Promise<any> => {
-    req.body.image = req.file.filename ?? null;
+    req.body.image = isUndefined(req.file) ? null : (req.file.filename ?? null);
 
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);

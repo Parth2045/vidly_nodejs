@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getGenre = exports.deleteGenre = exports.updateGenre = exports.storeGenres = exports.getGenres = void 0;
 const genre_1 = require("../models/genre");
 const movie_1 = require("../models/movie");
+const lodash_1 = require("lodash");
 const getGenres = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const genres = yield genre_1.Genre.find().sort('name').lean();
     res.send(genres);
@@ -19,7 +20,7 @@ const getGenres = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getGenres = getGenres;
 const storeGenres = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    req.body.image = (_a = req.file.filename) !== null && _a !== void 0 ? _a : null;
+    req.body.image = (0, lodash_1.isUndefined)(req.file) ? null : ((_a = req.file.filename) !== null && _a !== void 0 ? _a : null);
     const { error } = (0, genre_1.validateGenre)(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);
