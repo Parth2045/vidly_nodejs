@@ -42,7 +42,7 @@ exports.Movie = Movie;
 function validateMovie(movie) {
     const schema = {
         title: joi_1.default.string().min(5).max(50).required(),
-        image: joi_1.default.required(),
+        image: joi_1.default.allow(null),
         genreId: joi_1.default.objectId().required(),
         numberInStock: joi_1.default.number().min(0).required(),
         dailyRentalRate: joi_1.default.number().min(0).required()

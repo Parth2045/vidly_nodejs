@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { Movie, validateMovie } from '../models/movie';
 import { Genre } from '../models/genre';
-
-
+import { isUndefined } from 'lodash';
 
 const getMovies = async (req: Request, res: Response): Promise<any> => {
   const movies = await Movie.find().sort('name').lean().select('-__v');
@@ -10,8 +9,7 @@ const getMovies = async (req: Request, res: Response): Promise<any> => {
 };
 
 const storeMovie = async (req: Request, res: Response): Promise<any> => {
-
-  req.body.image = req.file.originalname ?? null;
+  req.body.image = isUndefined(req.file) ? null : (req.file.filename ?? null);
 
   const { error } = validateMovie(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -36,6 +34,8 @@ const storeMovie = async (req: Request, res: Response): Promise<any> => {
 };
 
 const updateMovie = async (req: Request, res: Response): Promise<any> => {
+  req.body.image = isUndefined(req.file) ? null : (req.file.filename ?? null);
+
   const { error } = validateMovie(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -45,9 +45,11 @@ const updateMovie = async (req: Request, res: Response): Promise<any> => {
   const movie = await Movie.findByIdAndUpdate(req.params.id,
     {
       title: req.body.title,
+      image: req.body.image,
       genre: {
         _id: genre._id,
-        name: genre.name
+        name: genre.name,
+        image: genre.image
       },
       numberInStock: req.body.numberInStock,
       dailyRentalRate: req.body.dailyRentalRate

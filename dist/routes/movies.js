@@ -23,14 +23,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const moviesController = __importStar(require("../controllers/movies"));
+const movies_1 = require("../controllers/movies");
 const express = __importStar(require("express"));
+const UploadFile_util_1 = require("../utils/UploadFile.util");
 const router = express.Router();
 router.route('/')
-    .get(moviesController.getMovies)
-    .post(moviesController.storeMovie);
+    .get(movies_1.getMovies)
+    .post([(0, UploadFile_util_1.UploadFile)("movies", "image", 1)], movies_1.storeMovie);
 router.route('/:id')
-    .put(moviesController.updateMovie)
-    .delete(moviesController.deleteMovie)
-    .get(moviesController.getMovie);
+    .put([(0, UploadFile_util_1.UploadFile)("movies", "image", 1)], movies_1.updateMovie)
+    .delete(movies_1.deleteMovie)
+    .get(movies_1.getMovie);
 exports.default = router;
