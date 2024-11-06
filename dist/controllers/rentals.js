@@ -45,7 +45,8 @@ const storeRental = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     let rental = new rental_1.Rental({
         customer: {
             _id: customer._id,
-            name: customer.name,
+            firstName: customer.firstName,
+            lastName: customer.lastName,
             phone: customer.phone
         },
         movie: {

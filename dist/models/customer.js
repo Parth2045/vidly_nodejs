@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -30,11 +39,18 @@ exports.Customer = void 0;
 exports.validateCustomer = validateCustomer;
 const joi_1 = __importDefault(require("joi"));
 const mongoose_1 = __importStar(require("mongoose"));
+const bcrypt_1 = require("bcrypt");
 const customerSchema = new mongoose_1.default.Schema({
-    name: {
+    firstName: {
         type: String,
         required: true,
-        minlength: 5,
+        minlength: 2,
+        maxlength: 50
+    },
+    lastName: {
+        type: String,
+        required: true,
+        minlength: 2,
         maxlength: 50
     },
     isGold: {
@@ -47,16 +63,38 @@ const customerSchema = new mongoose_1.default.Schema({
         minlength: 5,
         maxlength: 50
     },
+    password: {
+        type: String,
+        required: true,
+        minlength: 8,
+        maxlength: 50
+    },
     date: {
-        type: Date, default: Date.now
+        type: Date,
+        default: Date.now
     }
+});
+customerSchema.pre("save", function (next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!this.isModified("password"))
+            return next();
+        try {
+            this.password = yield (0, bcrypt_1.hash)(this.password, 10);
+            next();
+        }
+        catch (error) {
+            return next(error);
+        }
+    });
 });
 const Customer = (0, mongoose_1.model)('Customer', customerSchema);
 exports.Customer = Customer;
-function validateCustomer(customer) {
+function validateCustomer(customer, isUpdate = false) {
     const schema = {
-        name: joi_1.default.string().min(5).max(50).required(),
+        firstName: joi_1.default.string().min(2).max(50).required(),
+        lastName: joi_1.default.string().min(2).max(50).required(),
         phone: joi_1.default.string().min(5).max(50).required(),
+        password: (isUpdate ? joi_1.default.string().min(8).max(50) : joi_1.default.string().min(8).max(50).required()),
         isGold: joi_1.default.boolean()
     };
     return joi_1.default.validate(customer, schema);
