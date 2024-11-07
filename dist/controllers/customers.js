@@ -32,7 +32,7 @@ const storeCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.storeCustomer = storeCustomer;
 const updateCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { error } = (0, customer_1.validateCustomer)(req.body, true);
+    const { error } = (0, customer_1.validateCustomerUpdate)(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);
     const customer = yield customer_1.Customer.findByIdAndUpdate(req.params.id, {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Customer, validateCustomer } from '../models/customer';
+import { Customer, validateCustomer, validateCustomerUpdate } from '../models/customer';
 
 const getCustomers = async (req: Request, res: Response): Promise<any> => {
   const customers = await Customer.find().sort('name').lean().select('-__v -password');
@@ -24,7 +24,7 @@ const storeCustomer = async (req: Request, res: Response): Promise<any> => {
 };
 
 const updateCustomer = async (req: Request, res: Response): Promise<any> => {
-  const { error } = validateCustomer(req.body, true);
+  const { error } = validateCustomerUpdate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const customer = await Customer.findByIdAndUpdate(req.params.id,
@@ -50,7 +50,7 @@ const deleteCustomer = async (req: Request, res: Response): Promise<any> => {
 };
 
 const getCustomer = async (req: Request, res: Response): Promise<any> => {
-  const customer = await Customer.findById(req.params.id).lean().select('-__v -date -password');
+  const customer = await Customer.findById(req.params.id).lean().select('-__v -password');
 
   if (!customer) return res.status(404).send('The customer with the given ID was not found.');
 

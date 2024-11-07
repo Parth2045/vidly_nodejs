@@ -37,9 +37,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Customer = void 0;
 exports.validateCustomer = validateCustomer;
+exports.validateCustomerUpdate = validateCustomerUpdate;
 const joi_1 = __importDefault(require("joi"));
 const mongoose_1 = __importStar(require("mongoose"));
 const bcrypt_1 = require("bcrypt");
+const SALT_WORK_FACTOR = 10;
 const customerSchema = new mongoose_1.default.Schema({
     firstName: {
         type: String,
@@ -79,7 +81,21 @@ customerSchema.pre("save", function (next) {
         if (!this.isModified("password"))
             return next();
         try {
-            this.password = yield (0, bcrypt_1.hash)(this.password, 10);
+            this.password = yield (0, bcrypt_1.hash)(this.password, SALT_WORK_FACTOR);
+            next();
+        }
+        catch (error) {
+            return next(error);
+        }
+    });
+});
+customerSchema.pre("findOneAndUpdate", function (next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const update = this.getUpdate();
+        try {
+            if (update && update.password) {
+                update.password = yield (0, bcrypt_1.hash)(update.password, SALT_WORK_FACTOR);
+            }
             next();
         }
         catch (error) {
@@ -89,12 +105,22 @@ customerSchema.pre("save", function (next) {
 });
 const Customer = (0, mongoose_1.model)('Customer', customerSchema);
 exports.Customer = Customer;
-function validateCustomer(customer, isUpdate = false) {
+function validateCustomer(customer) {
     const schema = {
         firstName: joi_1.default.string().min(2).max(50).required(),
         lastName: joi_1.default.string().min(2).max(50).required(),
         phone: joi_1.default.string().min(5).max(50).required(),
-        password: (isUpdate ? joi_1.default.string().min(8).max(50) : joi_1.default.string().min(8).max(50).required()),
+        password: joi_1.default.string().min(8).max(50).required(),
+        isGold: joi_1.default.boolean()
+    };
+    return joi_1.default.validate(customer, schema);
+}
+function validateCustomerUpdate(customer) {
+    const schema = {
+        firstName: joi_1.default.string().min(2).max(50),
+        lastName: joi_1.default.string().min(2).max(50),
+        phone: joi_1.default.string().min(5).max(50),
+        password: joi_1.default.string().min(8).max(50),
         isGold: joi_1.default.boolean()
     };
     return joi_1.default.validate(customer, schema);
