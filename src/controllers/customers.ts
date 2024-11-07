@@ -24,6 +24,9 @@ const storeCustomer = async (req: Request, res: Response): Promise<any> => {
 };
 
 const updateCustomer = async (req: Request, res: Response): Promise<any> => {
+
+  if (Object.keys(req.body).length <= 0) return res.status(400).send('Nothing to update');
+
   const { error } = validateCustomerUpdate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 

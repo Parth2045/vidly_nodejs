@@ -32,6 +32,8 @@ const storeCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.storeCustomer = storeCustomer;
 const updateCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (Object.keys(req.body).length <= 0)
+        return res.status(400).send('Nothing to update');
     const { error } = (0, customer_1.validateCustomerUpdate)(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);
@@ -55,7 +57,7 @@ const deleteCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.deleteCustomer = deleteCustomer;
 const getCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const customer = yield customer_1.Customer.findById(req.params.id).lean().select('-__v -date -password');
+    const customer = yield customer_1.Customer.findById(req.params.id).lean().select('-__v -password');
     if (!customer)
         return res.status(404).send('The customer with the given ID was not found.');
     res.send(customer);
