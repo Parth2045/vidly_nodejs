@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { Customer, validateCustomer, validateCustomerUpdate, isEmailExist } from '../models/customer';
+import { Customer, validateCustomer, validateCustomerUpdate, isEmailExist, validateEmailPassword } from '../models/customer';
+import _ from 'lodash';
 
 const getCustomers = async (req: Request, res: Response): Promise<any> => {
   const customers = await Customer.find().sort('name').lean().select('-__v -password');
@@ -63,4 +64,25 @@ const getCustomer = async (req: Request, res: Response): Promise<any> => {
   res.send(customer);
 };
 
-export { getCustomers, storeCustomer, updateCustomer, deleteCustomer, getCustomer };
+const signIn = async (req: Request, res: Response): Promise<any> => {
+  const { error } = validateEmailPassword(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const { email, password } = req.body;
+
+  try {
+    const customer = await Customer.findOne({ email: email }).select('-__v');
+    if (!customer) return res.status(400).send("Invalid email or password.");
+
+    const isMatch = await customer.isValidPassword(password);
+    if (!isMatch) return res.status(400).send("Invalid email or password.");
+
+    res.send({ "customer": _.omit(customer.toObject(), ['password']), "token": await customer.customerToken(_.omit(customer.toObject(), ['password'])) });
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send("An unexpected error occurred.");
+  }
+};
+
+export { getCustomers, storeCustomer, updateCustomer, deleteCustomer, getCustomer, signIn };

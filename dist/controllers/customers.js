@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCustomer = exports.deleteCustomer = exports.updateCustomer = exports.storeCustomer = exports.getCustomers = void 0;
+exports.signIn = exports.getCustomer = exports.deleteCustomer = exports.updateCustomer = exports.storeCustomer = exports.getCustomers = void 0;
 const customer_1 = require("../models/customer");
+const lodash_1 = __importDefault(require("lodash"));
 const getCustomers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const customers = yield customer_1.Customer.find().sort('name').lean().select('-__v -password');
     res.send(customers);
@@ -43,7 +47,6 @@ const updateCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const customer = yield customer_1.Customer.findByIdAndUpdate(req.params.id, {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        email: req.body.email,
         isGold: req.body.isGold,
         phone: req.body.phone,
         password: req.body.password,
@@ -68,8 +71,22 @@ const getCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getCustomer = getCustomer;
 const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const customer = yield customer_1.Customer.find({ email: req.params.email, password: req.params.password }).lean().select('-__v -password');
-    if (!customer)
-        return res.status(404).send('The customer with the given ID was not found.');
-    res.send(customer);
+    const { error } = (0, customer_1.validateEmailPassword)(req.body);
+    if (error)
+        return res.status(400).send(error.details[0].message);
+    const { email, password } = req.body;
+    try {
+        const customer = yield customer_1.Customer.findOne({ email: email }).select('-__v');
+        if (!customer)
+            return res.status(400).send("Invalid email or password.");
+        const isMatch = yield customer.isValidPassword(password);
+        if (!isMatch)
+            return res.status(400).send("Invalid email or password.");
+        res.send({ "customer": lodash_1.default.omit(customer.toObject(), ['password']), "token": yield customer.customerToken(lodash_1.default.omit(customer.toObject(), ['password'])) });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send("An unexpected error occurred.");
+    }
 });
+exports.signIn = signIn;

@@ -39,10 +39,14 @@ exports.Customer = void 0;
 exports.validateCustomer = validateCustomer;
 exports.validateCustomerUpdate = validateCustomerUpdate;
 exports.isEmailExist = isEmailExist;
+exports.validateEmailPassword = validateEmailPassword;
 const joi_1 = __importDefault(require("joi"));
 const mongoose_1 = __importStar(require("mongoose"));
 const bcrypt_1 = require("bcrypt");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const SALT_WORK_FACTOR = 10;
+const JWT_SECRET = '17c748b44fa7d672c97d2d0063156dba41bdcb23d1c95e57f7eb961245adac6f473f4a02a83f80bbeb126e03bdf9faac2661b9c408822941275e5adf0ee6200ecfca1ebabef7cff418a53c5a22158d82b22c32d4d0b06b74ad7720cbb505ed1d3219045c5fa90b8786e96471efff7d1a1b321fa3e4c4cdaae3f3d8d9f2dc7698c42c84a81b9784f3f970e121f52e2534f1c1db84f22cf1e0694774a56981abd9cb90dfbf314f8b114048fc166b937e5da323ee5e339149a54a44c3d5f32f69740323278f941754e67371dda2cd12b2a6dbcd0a848faedafeae5d18cb030b194b80466e3755edeea131313539d947551c5976f729f553987add7e282926f00471';
+const JWT_EXPIRE_TIME = 3600; // IN SECONDS
 const customerSchema = new mongoose_1.default.Schema({
     firstName: {
         type: String,
@@ -111,6 +115,18 @@ customerSchema.pre("findOneAndUpdate", function (next) {
         }
     });
 });
+customerSchema.method('isValidPassword', function (password) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield (0, bcrypt_1.compare)(password, this.password);
+    });
+});
+customerSchema.method('customerToken', function (customer) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return jsonwebtoken_1.default.sign({
+            data: customer
+        }, JWT_SECRET, { expiresIn: JWT_EXPIRE_TIME });
+    });
+});
 const Customer = (0, mongoose_1.model)('Customer', customerSchema);
 exports.Customer = Customer;
 function validateCustomer(customer) {
@@ -128,10 +144,16 @@ function validateCustomerUpdate(customer) {
     const schema = {
         firstName: joi_1.default.string().min(2).max(50),
         lastName: joi_1.default.string().min(2).max(50),
-        email: joi_1.default.string().min(5).max(255),
         phone: joi_1.default.string().min(5).max(50),
         password: joi_1.default.string().min(8).max(50),
         isGold: joi_1.default.boolean()
+    };
+    return joi_1.default.validate(customer, schema);
+}
+function validateEmailPassword(customer) {
+    const schema = {
+        email: joi_1.default.string().min(5).max(255).required(),
+        password: joi_1.default.string().min(8).max(50).required()
     };
     return joi_1.default.validate(customer, schema);
 }

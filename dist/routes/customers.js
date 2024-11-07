@@ -33,4 +33,6 @@ router.route('/:id')
     .put(customers_1.updateCustomer)
     .delete(customers_1.deleteCustomer)
     .get(customers_1.getCustomer);
+router.route('/signin')
+    .post(customers_1.signIn);
 exports.default = router;
