@@ -23,14 +23,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const customersController = __importStar(require("../controllers/customers"));
+const customers_1 = require("../controllers/customers");
 const express = __importStar(require("express"));
 const router = express.Router();
 router.route('/')
-    .get(customersController.getCustomers)
-    .post(customersController.storeCustomer);
+    .get(customers_1.getCustomers)
+    .post(customers_1.storeCustomer);
 router.route('/:id')
-    .put(customersController.updateCustomer)
-    .delete(customersController.deleteCustomer)
-    .get(customersController.getCustomer);
+    .put(customers_1.updateCustomer)
+    .delete(customers_1.deleteCustomer)
+    .get(customers_1.getCustomer);
 exports.default = router;

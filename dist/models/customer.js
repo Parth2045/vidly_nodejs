@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Customer = void 0;
 exports.validateCustomer = validateCustomer;
 exports.validateCustomerUpdate = validateCustomerUpdate;
+exports.isEmailExist = isEmailExist;
 const joi_1 = __importDefault(require("joi"));
 const mongoose_1 = __importStar(require("mongoose"));
 const bcrypt_1 = require("bcrypt");
@@ -54,6 +55,13 @@ const customerSchema = new mongoose_1.default.Schema({
         required: true,
         minlength: 2,
         maxlength: 50
+    },
+    email: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 255,
+        unique: true,
     },
     isGold: {
         type: Boolean,
@@ -109,6 +117,7 @@ function validateCustomer(customer) {
     const schema = {
         firstName: joi_1.default.string().min(2).max(50).required(),
         lastName: joi_1.default.string().min(2).max(50).required(),
+        email: joi_1.default.string().min(5).max(255).required(),
         phone: joi_1.default.string().min(5).max(50).required(),
         password: joi_1.default.string().min(8).max(50).required(),
         isGold: joi_1.default.boolean()
@@ -119,9 +128,13 @@ function validateCustomerUpdate(customer) {
     const schema = {
         firstName: joi_1.default.string().min(2).max(50),
         lastName: joi_1.default.string().min(2).max(50),
+        email: joi_1.default.string().min(5).max(255),
         phone: joi_1.default.string().min(5).max(50),
         password: joi_1.default.string().min(8).max(50),
         isGold: joi_1.default.boolean()
     };
     return joi_1.default.validate(customer, schema);
+}
+function isEmailExist(email) {
+    return Customer.findOne({ email });
 }

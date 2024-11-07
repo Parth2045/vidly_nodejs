@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Customer, validateCustomer, validateCustomerUpdate } from '../models/customer';
+import { Customer, validateCustomer, validateCustomerUpdate, isEmailExist } from '../models/customer';
 
 const getCustomers = async (req: Request, res: Response): Promise<any> => {
   const customers = await Customer.find().sort('name').lean().select('-__v -password');
@@ -10,9 +10,12 @@ const storeCustomer = async (req: Request, res: Response): Promise<any> => {
   const { error } = validateCustomer(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
+  if (await isEmailExist(req.body.email)) return res.status(422).send('Email already exist');
+
   let customer = new Customer({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
+    email: req.body.email,
     isGold: req.body.isGold,
     phone: req.body.phone,
     password: req.body.password,

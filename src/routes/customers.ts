@@ -1,14 +1,14 @@
-import * as customersController from '../controllers/customers';
+import { getCustomers, storeCustomer, updateCustomer, deleteCustomer, getCustomer } from '../controllers/customers';
 import * as express from 'express';
 const router = express.Router();
 
 router.route('/')
-  .get(customersController.getCustomers)
-  .post(customersController.storeCustomer);
+  .get(getCustomers)
+  .post(storeCustomer);
 
 router.route('/:id')
-  .put(customersController.updateCustomer)
-  .delete(customersController.deleteCustomer)
-  .get(customersController.getCustomer);
+  .put(updateCustomer)
+  .delete(deleteCustomer)
+  .get(getCustomer);
 
 export default router;

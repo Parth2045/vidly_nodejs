@@ -7,6 +7,7 @@ interface ICustomer extends Document {
   _id: mongoose.Types.ObjectId;
   firstName: string;
   lastName: string;
+  email: string;
   isGold: boolean;
   phone: string;
   password: string;
@@ -25,6 +26,13 @@ const customerSchema: Schema = new mongoose.Schema<ICustomer>({
     required: true,
     minlength: 2,
     maxlength: 50
+  },
+  email: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 255,
+    unique: true,
   },
   isGold: {
     type: Boolean,
@@ -72,10 +80,11 @@ customerSchema.pre("findOneAndUpdate", async function (next) {
 
 const Customer: Model<ICustomer> = model<ICustomer>('Customer', customerSchema);
 
-function validateCustomer(customer: { firstName: string, lastName: string, phone: string, password: string, isGold: boolean }) {
+function validateCustomer(customer: { firstName: string, lastName: string, email: string, phone: string, password: string, isGold: boolean }) {
   const schema = {
     firstName: Joi.string().min(2).max(50).required(),
     lastName: Joi.string().min(2).max(50).required(),
+    email: Joi.string().min(5).max(255).required(),
     phone: Joi.string().min(5).max(50).required(),
     password: Joi.string().min(8).max(50).required(),
     isGold: Joi.boolean()
@@ -95,4 +104,8 @@ function validateCustomerUpdate(customer: { firstName: string, lastName: string,
   return Joi.validate(customer, schema);
 }
 
-export { Customer, validateCustomer, validateCustomerUpdate };
+function isEmailExist(email: string) {
+  return Customer.findOne({ email });
+}
+
+export { Customer, validateCustomer, validateCustomerUpdate, isEmailExist };

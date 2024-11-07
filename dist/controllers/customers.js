@@ -20,9 +20,12 @@ const storeCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const { error } = (0, customer_1.validateCustomer)(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);
+    if (yield (0, customer_1.isEmailExist)(req.body.email))
+        return res.status(422).send('Email already exist');
     let customer = new customer_1.Customer({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
+        email: req.body.email,
         isGold: req.body.isGold,
         phone: req.body.phone,
         password: req.body.password,
@@ -40,6 +43,7 @@ const updateCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const customer = yield customer_1.Customer.findByIdAndUpdate(req.params.id, {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
+        email: req.body.email,
         isGold: req.body.isGold,
         phone: req.body.phone,
         password: req.body.password,
@@ -63,3 +67,9 @@ const getCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     res.send(customer);
 });
 exports.getCustomer = getCustomer;
+const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const customer = yield customer_1.Customer.find({ email: req.params.email, password: req.params.password }).lean().select('-__v -password');
+    if (!customer)
+        return res.status(404).send('The customer with the given ID was not found.');
+    res.send(customer);
+});
