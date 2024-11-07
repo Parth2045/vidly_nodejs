@@ -142,7 +142,7 @@ var getCustomer = function (req, res) { return __awaiter(void 0, void 0, Promise
 }); };
 exports.getCustomer = getCustomer;
 var signIn = function (req, res) { return __awaiter(void 0, void 0, Promise, function () {
-    var error, _a, email, password, customer, isMatch, _b, _c, _d, _e, error_1;
+    var error, _a, email, password, customer, isMatch, _b, _c, _d, _e;
     return __generator(this, function (_f) {
         switch (_f.label) {
             case 0:
@@ -150,16 +150,13 @@ var signIn = function (req, res) { return __awaiter(void 0, void 0, Promise, fun
                 if (error)
                     return [2 /*return*/, res.status(400).send(error.details[0].message)];
                 _a = req.body, email = _a.email, password = _a.password;
-                _f.label = 1;
-            case 1:
-                _f.trys.push([1, 5, , 6]);
                 return [4 /*yield*/, customer_1.Customer.findOne({ email: email }).select('-__v')];
-            case 2:
+            case 1:
                 customer = _f.sent();
                 if (!customer)
                     return [2 /*return*/, res.status(400).send("Invalid email or password.")];
                 return [4 /*yield*/, customer.isValidPassword(password)];
-            case 3:
+            case 2:
                 isMatch = _f.sent();
                 if (!isMatch)
                     return [2 /*return*/, res.status(400).send("Invalid email or password.")];
@@ -167,15 +164,11 @@ var signIn = function (req, res) { return __awaiter(void 0, void 0, Promise, fun
                 _d = { "customer": lodash_1["default"].omit(customer.toObject(), ['password']) };
                 _e = "token";
                 return [4 /*yield*/, customer.customerToken(lodash_1["default"].omit(customer.toObject(), ['password']))];
-            case 4:
+            case 3:
                 _c.apply(_b, [(_d[_e] = _f.sent(), _d)]);
-                return [3 /*break*/, 6];
-            case 5:
-                error_1 = _f.sent();
-                console.log(error_1);
+                console.log(error);
                 res.status(500).send("An unexpected error occurred.");
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [2 /*return*/];
         }
     });
 }); };

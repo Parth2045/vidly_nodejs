@@ -70,19 +70,16 @@ const signIn = async (req: Request, res: Response): Promise<any> => {
 
   const { email, password } = req.body;
 
-  try {
-    const customer = await Customer.findOne({ email: email }).select('-__v');
-    if (!customer) return res.status(400).send("Invalid email or password.");
+  const customer = await Customer.findOne({ email: email }).select('-__v');
+  if (!customer) return res.status(400).send("Invalid email or password.");
 
-    const isMatch = await customer.isValidPassword(password);
-    if (!isMatch) return res.status(400).send("Invalid email or password.");
+  const isMatch = await customer.isValidPassword(password);
+  if (!isMatch) return res.status(400).send("Invalid email or password.");
 
-    res.send({ "customer": _.omit(customer.toObject(), ['password']), "token": await customer.customerToken(_.omit(customer.toObject(), ['password'])) });
-  }
-  catch (error) {
-    console.log(error);
-    res.status(500).send("An unexpected error occurred.");
-  }
+  res.send({ "customer": _.omit(customer.toObject(), ['password']), "token": await customer.customerToken(_.omit(customer.toObject(), ['password'])) });
+
+  console.log(error);
+  res.status(500).send("An unexpected error occurred.");
 };
 
 export { getCustomers, storeCustomer, updateCustomer, deleteCustomer, getCustomer, signIn };
