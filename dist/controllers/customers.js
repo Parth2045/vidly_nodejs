@@ -23,9 +23,9 @@ exports.getCustomers = getCustomers;
 const storeCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { error } = (0, customer_1.validateCustomer)(req.body);
     if (error)
-        return res.status(400).send(error.details[0].message);
+        return res.status(400).send({ error: error.details[0].message });
     if (yield (0, customer_1.isEmailExist)(req.body.email))
-        return res.status(422).send('Email already exist');
+        return res.status(422).send({ error: 'Email already exist' });
     let customer = new customer_1.Customer({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -73,7 +73,7 @@ exports.getCustomer = getCustomer;
 const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { error } = (0, customer_1.validateEmailPassword)(req.body);
     if (error)
-        return res.status(400).send(error.details[0].message);
+        return res.status(400).send({ error: error.details[0].message });
     const { email, password } = req.body;
     const customer = yield customer_1.Customer.findOne({ email: email }).select('-__v');
     if (!customer)

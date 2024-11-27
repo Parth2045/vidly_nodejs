@@ -9,9 +9,9 @@ const getCustomers = async (req: Request, res: Response): Promise<any> => {
 
 const storeCustomer = async (req: Request, res: Response): Promise<any> => {
   const { error } = validateCustomer(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ error: error.details[0].message });
 
-  if (await isEmailExist(req.body.email)) return res.status(422).send('Email already exist');
+  if (await isEmailExist(req.body.email)) return res.status(422).send({ error: 'Email already exist' });
 
   let customer = new Customer({
     firstName: req.body.firstName,
@@ -66,7 +66,7 @@ const getCustomer = async (req: Request, res: Response): Promise<any> => {
 
 const signIn = async (req: Request, res: Response): Promise<any> => {
   const { error } = validateEmailPassword(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ error: error.details[0].message });
 
   const { email, password } = req.body;
 
