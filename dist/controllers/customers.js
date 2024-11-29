@@ -75,14 +75,17 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (error)
         return res.status(400).send({ error: error.details[0].message });
     const { email, password } = req.body;
-    const customer = yield customer_1.Customer.findOne({ email: email }).select('-__v');
-    if (!customer)
-        return res.status(400).send("Invalid email or password.");
-    const isMatch = yield customer.isValidPassword(password);
-    if (!isMatch)
-        return res.status(400).send("Invalid email or password.");
-    res.send({ "customer": lodash_1.default.omit(customer.toObject(), ['password']), "token": yield customer.customerToken(lodash_1.default.omit(customer.toObject(), ['password'])) });
-    console.log(error);
-    res.status(500).send("An unexpected error occurred.");
+    try {
+        const customer = yield customer_1.Customer.findOne({ email: email }).select('-__v');
+        if (!customer)
+            return res.status(400).send("Invalid email or password.");
+        const isMatch = yield customer.isValidPassword(password);
+        if (!isMatch)
+            return res.status(400).send("Invalid email or password.");
+        res.send({ "customer": lodash_1.default.omit(customer.toObject(), ['password']), "token": yield customer.customerToken(lodash_1.default.omit(customer.toObject(), ['password'])) });
+    }
+    catch (eroro) {
+        res.status(500).send("An unexpected error occurred.");
+    }
 });
 exports.signIn = signIn;
