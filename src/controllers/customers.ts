@@ -78,7 +78,7 @@ const signIn = async (req: Request, res: Response): Promise<any> => {
 
     res.send({ "customer": _.omit(customer.toObject(), ['password']), "token": await customer.customerToken(_.omit(customer.toObject(), ['password'])) });
   }
-  catch (eroro) {
+  catch (error) {
     res.status(500).send("An unexpected error occurred.");
   }
 };
