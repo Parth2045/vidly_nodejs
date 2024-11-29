@@ -157,12 +157,12 @@ var signIn = function (req, res) { return __awaiter(void 0, void 0, Promise, fun
             case 2:
                 customer = _f.sent();
                 if (!customer)
-                    return [2 /*return*/, res.status(400).send("Invalid email or password.")];
+                    return [2 /*return*/, res.status(400).send({ error: "Invalid email." })];
                 return [4 /*yield*/, customer.isValidPassword(password)];
             case 3:
                 isMatch = _f.sent();
                 if (!isMatch)
-                    return [2 /*return*/, res.status(400).send("Invalid email or password.")];
+                    return [2 /*return*/, res.status(400).send({ error: "Invalid email or password." })];
                 _c = (_b = res).send;
                 _d = { "customer": lodash_1["default"].omit(customer.toObject(), ['password']) };
                 _e = "token";

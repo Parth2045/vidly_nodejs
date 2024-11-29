@@ -71,10 +71,10 @@ const signIn = async (req: Request, res: Response): Promise<any> => {
   const { email, password } = req.body;
   try {
     const customer = await Customer.findOne({ email: email }).select('-__v');
-    if (!customer) return res.status(400).send("Invalid email or password.");
+    if (!customer) return res.status(400).send({ error: "Invalid email." });
 
     const isMatch = await customer.isValidPassword(password);
-    if (!isMatch) return res.status(400).send("Invalid email or password.");
+    if (!isMatch) return res.status(400).send({ error: "Invalid email or password." });
 
     res.send({ "customer": _.omit(customer.toObject(), ['password']), "token": await customer.customerToken(_.omit(customer.toObject(), ['password'])) });
   }
